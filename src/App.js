@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import currencies from "./supported-currencies.json";
 
 const App = () => {
@@ -8,7 +8,35 @@ const App = () => {
 
   const onOptionChange = (event) => {
     setCurrency(event.target.value);
-  }
+  };
+
+  const bitcoinAPI = "https://api.coindesk.com/v1/bpi/historical/close.json";
+  useEffect(() => {
+    console.log("Inside useEffect")
+    async function getData() {
+      try {
+        const response = await fetch(`${bitcoinAPI}?currency=${currency}`)
+        const data = await response.json()
+        setBitcoinData(data.bpi)
+      } catch(err) {
+        console.log(err)
+      }
+    }
+    getData();
+  }, [currency])
+
+  // Not async/await
+  // const bitcoinAPI = "https://api.coindesk.com/v1/bpi/historical/close.json";
+  // useEffect(() => {
+  //   console.log("Inside useEffect")
+  //   function getData() {
+  //     fetch(`${bitcoinAPI}?currency=${currency}`)
+  //       .then((response) => response.json())
+  //       .then((data) => setBitcoinData(data.bpi))
+  //       .catch((e) => e);
+  //   }
+  //   getData();
+  // }, [currency])
 
   return (
     <div >
